@@ -3,15 +3,12 @@
 // now = generatedAt and the time zone UTC.
 
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
 import { test } from 'node:test';
-import { decodeSnapshot } from '../lib/snapshot.js';
 import { call } from '../lib/tools.js';
+import { fixtureSnapshot, fixtureText, input } from './helpers.js';
 
-const fixture = (name) => readFileSync(new URL(`./fixtures/${name}`, import.meta.url), 'utf8');
-const snapshot = decodeSnapshot(fixture('snapshot.json'));
-const curves = fixture('curves.json');
-const cases = JSON.parse(fixture('cases.json'));
+const snapshot = fixtureSnapshot();
+const cases = JSON.parse(fixtureText('cases.json'));
 
 test('the fixture snapshot decodes', () => {
   assert.ok(snapshot);
@@ -21,8 +18,8 @@ test('the fixture snapshot decodes', () => {
 
 for (const golden of cases) {
   test(`golden: ${golden.name}`, () => {
-    const input = { snapshot, curves: () => curves, now: snapshot.generatedAt, timeZone: 'UTC' };
-    const result = call(golden.tool, golden.arguments, input);
+    // input() sets now to the snapshot's generatedAt and the time zone to UTC.
+    const result = call(golden.tool, golden.arguments, input(snapshot));
     assert.equal(result.text, golden.text);
     assert.equal(result.isError, golden.isError);
   });

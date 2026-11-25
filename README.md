@@ -5,7 +5,7 @@ Ask an AI app on your computer about the coffee you've brewed. This small helper
 It's an unofficial helper for Curvelog. Curvelog works with the MAVO Lumicurve and BOOKOO Themis Ultra scales and is not affiliated with MAVO or BOOKOO.
 
 - **It only reads.** Nothing it does changes Curvelog or your brews.
-- **It makes no network calls.** It reads files on your computer and nothing else. The AI app you connect it to may send what it reads to that app's own service, as it does with anything else you ask it.
+- **It makes no network calls.** It reads files on your computer and nothing else. The AI app you connect it to may send what it reads to that app's own service, as it does with anything else you ask it. If you set it up with `npx` (step 4), `npx` downloads the helper from GitHub when the app starts it; the helper itself still makes no network calls.
 
 On a Mac with Curvelog for Mac, you don't need this: Curvelog for Mac has the same helper built in (Settings → AI apps). This one is for Windows, and for a Mac without Curvelog for Mac.
 
@@ -24,6 +24,8 @@ In Curvelog on your iPhone or iPad, go to Settings → AI apps and turn on **Kee
 
 Download `curvelog.mcpb` from this project's [Releases page](https://github.com/mdjhnson/curvelog-mcp/releases) and double-click it. You can also open Claude Desktop's Settings → Extensions and install it from there. Then ask Claude something like "What did I brew this week?"
 
+This is the best way for Claude Desktop: everything the helper needs is in that one file, so nothing is downloaded when Claude starts it, and you don't need to install Node.js.
+
 ### 4. The ChatGPT desktop app and other MCP apps
 
 Apps that run local MCP servers start this helper with Node.js, so install Node.js from [nodejs.org](https://nodejs.org) first (version 18 or newer). Then add this to the app's MCP settings:
@@ -33,16 +35,18 @@ Apps that run local MCP servers start this helper with Node.js, so install Node.
   "mcpServers": {
     "curvelog": {
       "command": "npx",
-      "args": ["-y", "github:mdjhnson/curvelog-mcp"]
+      "args": ["-y", "github:mdjhnson/curvelog-mcp#v1.0.0"]
     }
   }
 }
 ```
 
+When the app starts the helper, `npx` downloads it from GitHub (the `v1.0.0` release named in the settings), so your computer needs the internet at that moment. The helper itself makes no network calls once it's running.
+
 If your iCloud Drive isn't in the usual place, add `--dir` and the folder:
 
 ```json
-"args": ["-y", "github:mdjhnson/curvelog-mcp", "--dir", "D:\\iCloudDrive\\Curvelog"]
+"args": ["-y", "github:mdjhnson/curvelog-mcp#v1.0.0", "--dir", "D:\\iCloudDrive\\Curvelog"]
 ```
 
 ChatGPT on the web can only reach servers on the internet, so it can't use this helper. Instead, export a brew's curve as JSON from Curvelog and attach the file to your chat.
@@ -65,7 +69,11 @@ Hidden brews are left out.
 
 **The answers are missing your latest brews.** Curvelog updates the copy while it's open. Open Curvelog on your iPhone or iPad and wait a moment for iCloud Drive to sync. When the copy is more than an hour old, the helper says when it was made.
 
-**Your iCloud Drive is somewhere else.** Tell the helper where the Curvelog folder is. In Claude Desktop, open the extension's settings and pick the folder. In other apps, add `--dir` and the folder, as shown above. You can pick the Curvelog folder, its "AI apps" folder, or one device's folder inside that. Setting `CURVELOG_DIR` to the folder works too.
+**"Curvelog's copy is in iCloud Drive but isn't downloaded to this Mac yet."** macOS can remove files from your Mac that it thinks you don't need, and keep them only in iCloud. In Finder, open iCloud Drive → Curvelog → AI apps once, or right-click the folder and choose Download Now.
+
+**"Curvelog's copy in iCloud Drive couldn't be read."** The copy may be halfway through syncing, so try again in a moment. If it keeps happening, Curvelog may be writing a newer kind of copy than this helper knows: update the helper.
+
+**Your iCloud Drive is somewhere else.** Tell the helper where the Curvelog folder is. In Claude Desktop, open the extension's settings and pick the folder. In other apps, add `--dir` and the folder, as shown above. You can pick the Curvelog folder, its "AI apps" folder, or one device's folder inside that. Setting `CURVELOG_DIR` to the folder works too. A folder that doesn't start at the top of a drive is looked for in your home folder.
 
 ## For developers
 

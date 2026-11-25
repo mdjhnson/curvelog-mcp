@@ -6,6 +6,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { after, test } from 'node:test';
 import { chosenDir, findCopy, macContainer, readCurves } from '../lib/find.js';
+import { call, notDownloadedText, unreadableText } from '../lib/tools.js';
 import { fixtureText } from './helpers.js';
 
 const temp = mkdtempSync(path.join(tmpdir(), 'curvelog-mcp-'));
@@ -100,4 +101,69 @@ test('the folder comes from --dir, then CURVELOG_DIR', () => {
   assert.equal(chosenDir(['--dir', '${user_config.folder}'], {}), null);
   assert.equal(chosenDir(['--dir', ''], { CURVELOG_DIR: '/c' }), '/c');
   assert.equal(chosenDir(['--dir'], {}), null);
+});
+
+/** What a tool says about the copy found with these options. */
+function answer(options) {
+  const copy = findCopy(options);
+  return call('list_recent_brews', {}, { snapshot: copy?.snapshot ?? null, problem: copy?.problem ?? null, curves: () => null, now: new Date(), timeZone: 'UTC' });
+}
+
+test('an evicted iCloud placeholder is found but not downloaded', () => {
+  const root = path.join(temp, `root-${++made}`);
+  const device = path.join(root, 'AI apps', 'iPhone-EVICTED');
+  mkdirSync(device, { recursive: true });
+  writeFileSync(path.join(device, '.snapshot.json.icloud'), 'placeholder');
+  const logged = [];
+  assert.deepEqual(findCopy({ ...nowhere, dir: root, log: (line) => logged.push(line) }), { folder: null, snapshot: null, problem: 'notDownloaded' });
+  assert.equal(logged.length, 1);
+  assert.deepEqual(answer({ ...nowhere, dir: root }), { text: notDownloadedText, isError: true });
+  // A readable copy from another device wins.
+  makeRoot({ 'iPad-HERE': '2027-01-01T08:00:00Z' }, root);
+  assert.equal(findCopy({ ...nowhere, dir: root }).snapshot.instructions, 'iPad-HERE');
+});
+
+test('an evicted curves.json says so; a missing one is just missing', () => {
+  const root = makeRoot({ 'iPhone-CURVES': '2027-01-15T08:00:00Z' });
+  const device = path.join(root, 'AI apps', 'iPhone-CURVES');
+  rmSync(path.join(device, 'curves.json'));
+  assert.equal(readCurves(device), null);
+  writeFileSync(path.join(device, '.curves.json.icloud'), 'placeholder');
+  assert.deepEqual(readCurves(device), { problem: 'notDownloaded' });
+});
+
+test('an unreadable copy says it couldn\'t be read, not to turn the copy on', () => {
+  for (const contents of ['{"generatedAt": "soon"}', JSON.stringify({ ...JSON.parse(fixtureText('snapshot.json')), formatVersion: 2 })]) {
+    const root = path.join(temp, `root-${++made}`);
+    const device = path.join(root, 'AI apps', 'iPhone-BAD');
+    mkdirSync(device, { recursive: true });
+    writeFileSync(path.join(device, 'snapshot.json'), contents);
+    assert.equal(findCopy({ ...nowhere, dir: root }).problem, 'unreadable');
+    assert.deepEqual(answer({ ...nowhere, dir: root }), { text: unreadableText, isError: true });
+  }
+});
+
+test('a placeholder is reported before an unreadable copy', () => {
+  const root = path.join(temp, `root-${++made}`);
+  mkdirSync(path.join(root, 'AI apps', 'iPhone-A'), { recursive: true });
+  mkdirSync(path.join(root, 'AI apps', 'iPhone-B'), { recursive: true });
+  writeFileSync(path.join(root, 'AI apps', 'iPhone-A', 'snapshot.json'), 'not json');
+  writeFileSync(path.join(root, 'AI apps', 'iPhone-B', '.snapshot.json.icloud'), 'placeholder');
+  assert.equal(findCopy({ ...nowhere, dir: root }).problem, 'notDownloaded');
+});
+
+test('a relative --dir starts at the home folder, not the working folder', () => {
+  const home = path.join(temp, `home-${++made}`);
+  makeRoot({ 'iPhone-REL': '2027-01-15T08:00:00Z' }, path.join(home, 'Sync', 'Curvelog'));
+  assert.equal(findCopy({ platform: 'linux', home, env: {}, dir: path.join('Sync', 'Curvelog') }).snapshot.instructions, 'iPhone-REL');
+  assert.equal(findCopy({ platform: 'linux', home, env: {}, dir: '~/Sync/Curvelog' }).snapshot.instructions, 'iPhone-REL');
+});
+
+test('--dir loses only its quotes and line breaks', () => {
+  assert.equal(chosenDir(['--dir', '"/a b/Curvelog"'], {}), '/a b/Curvelog');
+  assert.equal(chosenDir(['--dir', "'/a b/Curvelog'\n"], {}), '/a b/Curvelog');
+  assert.equal(chosenDir([], { CURVELOG_DIR: '\r\n/c \r\n' }), '/c ');
+  assert.equal(chosenDir(['--dir', ' /keeps spaces '], {}), ' /keeps spaces ');
+  assert.equal(chosenDir(['--dir', '""'], { CURVELOG_DIR: '/c' }), '/c');
+  assert.equal(chosenDir(['--dir', '   '], {}), null);
 });

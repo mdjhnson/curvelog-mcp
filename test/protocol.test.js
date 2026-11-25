@@ -2,7 +2,7 @@
 
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { handle, instructionsText, protocolVersions } from '../lib/protocol.js';
+import { handle, handleSafely, instructionsText, protocolVersions } from '../lib/protocol.js';
 import { definitions } from '../lib/tools.js';
 import { fixtureSnapshot, input, locked } from './helpers.js';
 
@@ -85,4 +85,17 @@ test('tools/call returns text and isError', () => {
 
   const noArguments = send('{"jsonrpc":"2.0","id":6,"method":"tools/call","params":{"name":"list_recent_brews"}}');
   assert.ok(noArguments.result.content[0].text.startsWith('The newest 3 brews'));
+});
+
+test('an exception becomes -32603 for its id, and nothing for a notification', () => {
+  const options = { version: '1', input: () => { throw new Error('boom'); } };
+  const logged = [];
+  const log = (text) => logged.push(text);
+  const reply = JSON.parse(handleSafely('{"jsonrpc":"2.0","id":9,"method":"tools/call","params":{"name":"get_brew"}}', options, log));
+  assert.deepEqual(reply, { jsonrpc: '2.0', id: 9, error: { code: -32603, message: 'Internal error' } });
+  assert.equal(logged.length, 1);
+  assert.ok(logged[0].includes('boom'));
+  // A message that doesn't throw is answered as usual.
+  assert.equal(JSON.parse(handleSafely('{"jsonrpc":"2.0","id":"p","method":"ping"}', options, log)).result.constructor, Object);
+  assert.equal(JSON.parse(handleSafely('nope', options, log)).error.code, -32700);
 });

@@ -53,3 +53,20 @@ test('a missing or mistyped field makes it unreadable', () => {
   assert.equal(decodeSnapshot('not json'), null);
   assert.equal(decodeSnapshot('[]'), null);
 });
+
+test('impossible dates are unreadable', () => {
+  for (const generatedAt of ['2027-02-30T08:00:00Z', '2027-02-28T24:00:00Z', '2027-02-28T23:60:00Z', '2027-02-28T23:59:60Z', '2027-13-01T08:00:00Z', '2027-00-10T08:00:00Z']) {
+    assert.equal(decode({ ...base(), generatedAt }), null, generatedAt);
+  }
+  for (const [generatedAt, iso] of [['2028-02-29T08:00:00Z', '2028-02-29T08:00:00.000Z'], ['2027-01-15T03:00:00-05:00', '2027-01-15T08:00:00.000Z'], ['2027-01-15T08:00:00.25Z', '2027-01-15T08:00:00.250Z']]) {
+    assert.equal(decode({ ...base(), generatedAt }).generatedAt.toISOString(), iso, generatedAt);
+  }
+  const file = base();
+  file.brews[0].date = '2027-04-31T08:00:00Z';
+  assert.equal(decode(file), null);
+});
+
+test('a newer format than this helper knows is unreadable', () => {
+  assert.equal(decode({ ...base(), formatVersion: 2 }), null);
+  assert.ok(decode({ ...base(), formatVersion: 1 }));
+});

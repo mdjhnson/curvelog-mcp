@@ -3,7 +3,7 @@
 
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
-import { call, lockedText, missingText } from '../lib/tools.js';
+import { call, lockedText, missingText, notDownloadedText, unreadableText } from '../lib/tools.js';
 import { fixtureSnapshot, input, locked, newest } from './helpers.js';
 
 test('no copy says how to turn it on', () => {
@@ -97,4 +97,26 @@ test('a curve is found by id in any case, and a broken curves file has none', ()
   assert.equal(call('get_brew_curve', { brew_id: newest }, broken).isError, true);
   const none = { ...input(), curves: () => null };
   assert.equal(call('get_brew_curve', { brew_id: newest }, none).isError, true);
+});
+
+test('a copy that is not downloaded or can\'t be read says so', () => {
+  const notDownloaded = { ...input(null), problem: 'notDownloaded' };
+  assert.deepEqual(call('list_recent_brews', {}, notDownloaded), {
+    text: 'Curvelog\'s copy is in iCloud Drive but isn\'t downloaded to this Mac yet. In Finder, open iCloud Drive → Curvelog → AI apps once, or right-click the folder and choose Download Now.',
+    isError: true,
+  });
+  assert.equal(notDownloadedText, call('get_brew', {}, notDownloaded).text);
+  const unreadable = { ...input(null), problem: 'unreadable' };
+  assert.deepEqual(call('find_coffees', {}, unreadable), {
+    text: 'Curvelog\'s copy in iCloud Drive couldn\'t be read. It may still be syncing; try again in a moment. If it keeps happening, update this helper: github.com/mdjhnson/curvelog-mcp.',
+    isError: true,
+  });
+  assert.equal(unreadableText, call('get_dial_in', { coffee: 'Guji', method: 'V60' }, unreadable).text);
+});
+
+test('a curves file that is not downloaded says so', () => {
+  const evicted = { ...input(), curves: () => ({ problem: 'notDownloaded' }) };
+  assert.deepEqual(call('get_brew_curve', { brew_id: newest }, evicted), { text: notDownloadedText, isError: true });
+  // A missing brew_id is still asked for first.
+  assert.equal(call('get_brew_curve', {}, evicted).text, 'get_brew_curve needs a brew_id.');
 });
