@@ -1,0 +1,76 @@
+{
+  "manifest_version": "0.3",
+  "name": "curvelog",
+  "display_name": "Curvelog",
+  "version": "1.0.0",
+  "description": "Read the coffee brews Curvelog keeps in iCloud Drive. Read-only, and it makes no network calls.",
+  "long_description": "An unofficial helper for Curvelog, the brew log for iPhone and iPad. It reads the copy of your brews that Curvelog keeps in iCloud Drive (Settings → AI apps → Keep a copy for AI apps on a computer) so Claude can answer questions about them. It only reads, and it makes no network calls of its own. Curvelog works with the MAVO Lumicurve and BOOKOO Themis Ultra scales and is not affiliated with MAVO or BOOKOO.",
+  "author": {
+    "name": "Oak House Labs",
+    "url": "https://oakhouselabs.com/curvelog/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/mdjhnson/curvelog-mcp"
+  },
+  "homepage": "https://oakhouselabs.com/curvelog/",
+  "server": {
+    "type": "node",
+    "entry_point": "server.js",
+    "mcp_config": {
+      "command": "node",
+      "args": [
+        "${__dirname}/server.js",
+        "--dir",
+        "${user_config.folder}"
+      ]
+    }
+  },
+  "tools": [
+    {
+      "name": "list_recent_brews",
+      "description": "List the newest coffee brews logged in Curvelog, newest first."
+    },
+    {
+      "name": "get_brew",
+      "description": "One brew in full: its numbers, pours, how it tasted and Curvelog's advice for next time."
+    },
+    {
+      "name": "find_coffees",
+      "description": "Find coffees by name or roaster, with the methods each was brewed with."
+    },
+    {
+      "name": "get_dial_in",
+      "description": "A coffee on one brew method: every brew so far, what Curvelog has noticed and its plan for the next brew."
+    },
+    {
+      "name": "get_brew_curve",
+      "description": "The scale readings behind one brew's curve as JSON."
+    }
+  ],
+  "keywords": [
+    "coffee",
+    "brewing",
+    "espresso",
+    "pour-over",
+    "curvelog"
+  ],
+  "license": "MIT",
+  "compatibility": {
+    "platforms": [
+      "darwin",
+      "win32"
+    ],
+    "runtimes": {
+      "node": ">=18.0.0"
+    }
+  },
+  "user_config": {
+    "folder": {
+      "type": "directory",
+      "title": "Curvelog folder (optional)",
+      "description": "Leave this empty unless your iCloud Drive is somewhere unusual. Pick the Curvelog folder in iCloud Drive, its AI apps folder, or one device's folder inside that.",
+      "required": false
+    }
+  }
+}

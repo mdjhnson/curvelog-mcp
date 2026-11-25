@@ -1,0 +1,32 @@
+{
+  "name": "curvelog-mcp",
+  "version": "1.0.0",
+  "description": "Read-only MCP server for the coffee brews Curvelog keeps in iCloud Drive. Unofficial helper; no network calls.",
+  "type": "module",
+  "bin": {
+    "curvelog-mcp": "server.js"
+  },
+  "files": [
+    "server.js",
+    "lib/"
+  ],
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "test": "node --test",
+    "pack": "npx -y @anthropic-ai/mcpb validate manifest.json && npx -y @anthropic-ai/mcpb pack . curvelog.mcpb"
+  },
+  "keywords": [
+    "mcp",
+    "curvelog",
+    "coffee"
+  ],
+  "author": "Oak House Labs (https://oakhouselabs.com/curvelog/)",
+  "homepage": "https://oakhouselabs.com/curvelog/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mdjhnson/curvelog-mcp.git"
+  },
+  "license": "MIT"
+}

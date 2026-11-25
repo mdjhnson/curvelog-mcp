@@ -1,0 +1,216 @@
+[
+  {
+    "arguments" : {
+
+    },
+    "isError" : false,
+    "name" : "recent-default",
+    "text" : "The newest 3 brews, newest first:\n- 2027-01-15 07:00:00 · Señor Café from Made Up Roasters on Espresso · 18 g to 36 g, grind 12, 0:28 · tasted just right · 5 of 5 stars · id: 6F1D2A10-0000-4000-8000-000000000021\n- 2027-01-14 08:00:00 · Guji from Made Up Roasters on V60 · 15 g to 250 g, grind 6, 3:10 · tasted sour · 4 of 5 stars · id: 6F1D2A10-0000-4000-8000-000000000022\n- no date · Brew · id: 6F1D2A10-0000-4000-8000-000000000023",
+    "tool" : "list_recent_brews"
+  },
+  {
+    "arguments" : {
+      "count" : "2"
+    },
+    "isError" : false,
+    "name" : "recent-two",
+    "text" : "The newest 2 brews, newest first:\n- 2027-01-15 07:00:00 · Señor Café from Made Up Roasters on Espresso · 18 g to 36 g, grind 12, 0:28 · tasted just right · 5 of 5 stars · id: 6F1D2A10-0000-4000-8000-000000000021\n- 2027-01-14 08:00:00 · Guji from Made Up Roasters on V60 · 15 g to 250 g, grind 6, 3:10 · tasted sour · 4 of 5 stars · id: 6F1D2A10-0000-4000-8000-000000000022",
+    "tool" : "list_recent_brews"
+  },
+  {
+    "arguments" : {
+      "count" : "500"
+    },
+    "isError" : false,
+    "name" : "recent-too-many",
+    "text" : "The newest 3 brews, newest first:\n- 2027-01-15 07:00:00 · Señor Café from Made Up Roasters on Espresso · 18 g to 36 g, grind 12, 0:28 · tasted just right · 5 of 5 stars · id: 6F1D2A10-0000-4000-8000-000000000021\n- 2027-01-14 08:00:00 · Guji from Made Up Roasters on V60 · 15 g to 250 g, grind 6, 3:10 · tasted sour · 4 of 5 stars · id: 6F1D2A10-0000-4000-8000-000000000022\n- no date · Brew · id: 6F1D2A10-0000-4000-8000-000000000023",
+    "tool" : "list_recent_brews"
+  },
+  {
+    "arguments" : {
+
+    },
+    "isError" : false,
+    "name" : "brew-newest",
+    "text" : "This brew: Señor Café espresso in full.",
+    "tool" : "get_brew"
+  },
+  {
+    "arguments" : {
+      "brew_id" : "6f1d2a10-0000-4000-8000-000000000022"
+    },
+    "isError" : false,
+    "name" : "brew-by-id-lowercase",
+    "text" : "This brew: Guji on V60 in full.",
+    "tool" : "get_brew"
+  },
+  {
+    "arguments" : {
+      "brew_id" : "6F1D2A10-0000-4000-8000-000000000023"
+    },
+    "isError" : false,
+    "name" : "brew-without-summary",
+    "text" : "no date · Brew · id: 6F1D2A10-0000-4000-8000-000000000023\n\nCurvelog shares the full details only for its newest brews. get_dial_in has this coffee's brews in order.",
+    "tool" : "get_brew"
+  },
+  {
+    "arguments" : {
+      "brew_id" : "nope"
+    },
+    "isError" : true,
+    "name" : "brew-unknown-id",
+    "text" : "No brew has the id nope. list_recent_brews gives the ids.",
+    "tool" : "get_brew"
+  },
+  {
+    "arguments" : {
+
+    },
+    "isError" : false,
+    "name" : "coffees-all",
+    "text" : "- Señor Café from Made Up Roasters · brewed on Espresso · id: 6F1D2A10-0000-4000-8000-000000000003\n- Guji from Made Up Roasters · brewed on V60, Chemex · id: 6F1D2A10-0000-4000-8000-000000000001\n- Kenya AA · a previous coffee · not brewed yet · id: 6F1D2A10-0000-4000-8000-000000000002",
+    "tool" : "find_coffees"
+  },
+  {
+    "arguments" : {
+      "query" : "made up"
+    },
+    "isError" : false,
+    "name" : "coffees-query-roaster",
+    "text" : "- Señor Café from Made Up Roasters · brewed on Espresso · id: 6F1D2A10-0000-4000-8000-000000000003\n- Guji from Made Up Roasters · brewed on V60, Chemex · id: 6F1D2A10-0000-4000-8000-000000000001",
+    "tool" : "find_coffees"
+  },
+  {
+    "arguments" : {
+      "query" : "senor"
+    },
+    "isError" : false,
+    "name" : "coffees-query-accent",
+    "text" : "- Señor Café from Made Up Roasters · brewed on Espresso · id: 6F1D2A10-0000-4000-8000-000000000003",
+    "tool" : "find_coffees"
+  },
+  {
+    "arguments" : {
+      "query" : "Panama"
+    },
+    "isError" : false,
+    "name" : "coffees-none",
+    "text" : "No coffee in Curvelog matches \"Panama\".",
+    "tool" : "find_coffees"
+  },
+  {
+    "arguments" : {
+      "coffee" : "guji",
+      "method" : "v60"
+    },
+    "isError" : false,
+    "name" : "dialin-name",
+    "text" : "Guji on V60 dial-in.",
+    "tool" : "get_dial_in"
+  },
+  {
+    "arguments" : {
+      "coffee" : "SENOR CAFE",
+      "method" : "espresso"
+    },
+    "isError" : false,
+    "name" : "dialin-accent",
+    "text" : "Señor Café on Espresso dial-in.",
+    "tool" : "get_dial_in"
+  },
+  {
+    "arguments" : {
+      "coffee" : "Señor",
+      "method" : "Esp"
+    },
+    "isError" : false,
+    "name" : "dialin-part",
+    "text" : "Señor Café on Espresso dial-in.",
+    "tool" : "get_dial_in"
+  },
+  {
+    "arguments" : {
+      "coffee" : "6F1D2A10-0000-4000-8000-000000000001",
+      "method" : "6F1D2A10-0000-4000-8000-000000000012"
+    },
+    "isError" : false,
+    "name" : "dialin-ids",
+    "text" : "Guji on Chemex dial-in.",
+    "tool" : "get_dial_in"
+  },
+  {
+    "arguments" : {
+      "coffee" : "Guji",
+      "method" : "AeroPress"
+    },
+    "isError" : true,
+    "name" : "dialin-wrong-method",
+    "text" : "\"Guji\" hasn't been brewed on \"AeroPress\". Its dial-ins:\n- Guji on V60 (3 brews) · coffee id: 6F1D2A10-0000-4000-8000-000000000001 · method id: 6F1D2A10-0000-4000-8000-000000000011\n- Guji on Chemex (1 brews) · coffee id: 6F1D2A10-0000-4000-8000-000000000001 · method id: 6F1D2A10-0000-4000-8000-000000000012",
+    "tool" : "get_dial_in"
+  },
+  {
+    "arguments" : {
+      "coffee" : "Guji",
+      "method" : "chem"
+    },
+    "isError" : false,
+    "name" : "dialin-part-method",
+    "text" : "Guji on Chemex dial-in.",
+    "tool" : "get_dial_in"
+  },
+  {
+    "arguments" : {
+      "coffee" : "Panama",
+      "method" : "V60"
+    },
+    "isError" : true,
+    "name" : "dialin-unknown-coffee",
+    "text" : "No recent dial-in is for a coffee called \"Panama\". Curvelog shares the 3 dial-ins brewed most recently; find_coffees lists every coffee and the methods it was brewed on.",
+    "tool" : "get_dial_in"
+  },
+  {
+    "arguments" : {
+      "coffee" : "Guji"
+    },
+    "isError" : true,
+    "name" : "dialin-missing-method",
+    "text" : "get_dial_in needs a coffee and a method.",
+    "tool" : "get_dial_in"
+  },
+  {
+    "arguments" : {
+      "brew_id" : "6F1D2A10-0000-4000-8000-000000000021"
+    },
+    "isError" : false,
+    "name" : "curve-found",
+    "text" : "{\"id\":\"6F1D2A10-0000-4000-8000-000000000021\",\"mode\":\"espresso\",\"points\":[{\"grams\":0,\"seconds\":0},{\"grams\":36,\"seconds\":28}]}",
+    "tool" : "get_brew_curve"
+  },
+  {
+    "arguments" : {
+      "brew_id" : "6F1D2A10-0000-4000-8000-000000000022"
+    },
+    "isError" : true,
+    "name" : "curve-missing",
+    "text" : "Curvelog has no curve to share for that brew: it was typed in by hand, or it's older than the newest brews it shares curves for.",
+    "tool" : "get_brew_curve"
+  },
+  {
+    "arguments" : {
+
+    },
+    "isError" : true,
+    "name" : "curve-no-id",
+    "text" : "get_brew_curve needs a brew_id.",
+    "tool" : "get_brew_curve"
+  },
+  {
+    "arguments" : {
+
+    },
+    "isError" : true,
+    "name" : "unknown-tool",
+    "text" : "Curvelog has no tool called delete_brew.",
+    "tool" : "delete_brew"
+  }
+]
